@@ -10,7 +10,7 @@
 
     <div class="container">
 
-        <x-nav/>
+        @include('components.nav')
 
         {{ $slot }}
 
