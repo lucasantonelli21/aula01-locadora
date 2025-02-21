@@ -5,28 +5,37 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CustomerController extends Controller
 {
+
     /**
      * Função que retorn a view de tabela de Customers.
      *
      * @return void
      */
-    public function index(){
-        $customers = Customer::orderBy('id', 'desc')->get();
-        return view('/customers/index',['customers' => $customers]);
+    public function index(Request $request) {
+        $customers = Customer::orderBy('id', 'desc')->paginate($request->pagination ?? 10);
+
+        return view('/customers/index',[
+            'customers' => $customers
+        ]);
+
     }
 
+
+    public function filterPagination(Request $request){
+        return redirect()->route('customer.home', ['pagination' => $request['pagination']]);
+    }
     /**
      * Função responsável por retornar a view do Formulário para cadastro de Customers.
      *
      * @return void
      */
-    public function form(){
+    public function form() {
         return view('/customers/form');
     }
-
 
     /**
      * Função que transforma os dados apresentados pelo usuário na Model Customer e salva no DB
@@ -34,28 +43,108 @@ class CustomerController extends Controller
      * @param Request $request
      * @return void
      */
-    public function save(Request $request){
+    public function save(Request $request) {
+
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'email' => 'required',
+            'email' => 'required|unique:customers',
             'birth_date' =>'required',
             'cpf' => 'required|unique:customers',
             'phone' => 'required|unique:customers',
             'able' => 'required'
+        ],[
+            'unique' => 'O Campo :attribute deve ser único!',
+            'required' => 'O Campo :attribute deve ser preenchido!'
         ]);
+
         if($validator->fails()){
-            return back()->withInput();
+
+            return back()->withErrors($validator->errors())->withInput();
+
         }else{
-            $validated = $validator->validated();
+
             $customer = new Customer;
-            $customer->name = $validated['name'];
-            $customer->email = $validated['email'];
-            $customer->birth_date = $validated['birth_date'];
-            $customer->cpf = $validated['cpf'];
-            $customer->phone = $validated['phone'];
-            $customer->able = $validated['able'];
+            $customer->name = $request->name;
+            $customer->email = $request->email;
+            $customer->birth_date = $request->birth_date;
+            $customer->cpf = $request->cpf;
+            $customer->phone = $request->phone;
+            $customer->able = $request->able;
             $customer->save();
-            return redirect('clientes/');
+
+            return redirect()->route('customer.home')->withSuccess("Cliente criado com sucesso!");
+
+        }
+
+    }
+
+    /**
+     * Função que deleta um customer com base em seu id
+     */
+    public function delete(int $id){
+        try {
+            $customer = Customer::find($id);
+            if($customer == null){
+                return redirect()->route('customer.home')->withErrors('Não foi encontrado nenhum filme com este Id!');
+            }
+            $customer->delete();
+            return redirect()->route('customer.home')->withSuccess('Filme excluído com sucesso!');
+        } catch (\Throwable $th) {
+            Log::inf('Deleting movie [CUSTOMERCONTROLLER][DELETE]',$th->error_log);
+            return redirect()->route('customer.home')->withErrors('Sistema indisponível, tente mais tarde!');
         }
     }
+
+     /**
+     * Retorna a View do formulário de edit
+     *
+     * @param integer $id
+     * @return void
+     */
+    public function formEdit(int $id){
+        $customer = Customer::find($id);
+        return view('/customers/update',['customer' => $customer]);
+    }
+
+    /**
+     * Atualiza um Customer no DB
+     */
+
+    public function update(int $id,Request $request){
+        try {
+            $customer = Customer::find($id);
+            if($customer == null){
+                return redirect()->route('customer.home')->withErrors('Não foi encontrado nenhum cliente com este Id!');
+            }
+
+            $validator = Validator::make($request->all(), [
+                'email' => 'unique:customers',
+                'cpf' => 'unique:customers',
+                'phone' => 'unique:customers',
+            ],[
+                'unique' => 'O Campo :attribute deve ser único!'
+            ]);
+
+            if($validator->fails()){
+                return back()->withErrors($validator->errors())->withInput();
+            }
+
+            $customer->name = $request->name;
+            $customer->email = $request->email;
+            $customer->birth_date = $request->birth_date;
+            $customer->cpf = $request->cpf;
+            $customer->phone = $request->phone;
+            $customer->able = $request->able;
+            $customer->save();
+
+            return redirect()->route('customer.home')->withSuccess('Cliente editado com sucesso!');
+
+        } catch (\Throwable $th) {
+
+            Log::inf('Updating movie [CUSTOMERCONTROLLER][UPDATE]',$th->error_log);
+            return redirect()->route('customer.home')->withErrors('Sistema indisponível, tente mais tarde!');
+
+        }
+    }
+
 }

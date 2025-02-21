@@ -4,6 +4,7 @@ use App\Http\Controllers\CustomerController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\MovieController;
+use App\Http\Controllers\RentController;
 use App\Models\Customer;
 
 /*
@@ -21,22 +22,41 @@ Route::get('/', function () {
     return view('home');
 });
 
-Route::prefix('filmes')->group(function () {
+Route::prefix('filmes')->name('movie.')->group(function () {
 
-    Route::get('/',         [MovieController::class, 'index'])->name('movie.home');
-    Route::get('/criar',    [MovieController::class, 'form'])->name('movie.create');
-    Route::post('/salvar',  [MovieController::class, 'save'])->name('movie.save');
+    Route::get('/',                                 [MovieController::class, 'index'])->name('home');
+    Route::get('/criar',                            [MovieController::class, 'form'])->name('create');
+
+    Route::get('{id}/editar',                       [MovieController::class, 'formEdit'])->name('formEdit');
+    Route::post('/salvar',                          [MovieController::class, 'save'])->name('save');
+    Route::delete('{id}/deletar',                   [MovieController::class, 'delete'])->name('delete');
+    Route::put('{id}/editar',                       [MovieController::class, 'update'])->name('update');
+
+    Route::prefix('/{id}')->name('rent.')->controller(RentController::class)->group(function () {
+
+        Route::get('/alugar',  'form')->name('form');
+        Route::post('/salvar', 'save')->name('save');
+
+    });
 
 });
 
+Route::prefix('clientes')->name('customer.')->group(function () {
 
-Route::prefix('clientes')->group(function () {
+    Route::get('/',                                 [CustomerController::class, 'index'])->name('home');
+    Route::get('/criar',                            [CustomerController::class, 'form'])->name('create');
+    Route::get('{id}/editar',                       [CustomerController::class, 'formEdit'])->name('formEdit');
+    Route::post('/salvar',                          [CustomerController::class, 'save'])->name('save');
+    Route::delete('{id}/deletar',                   [CustomerController::class, 'delete'])->name('delete');
+    Route::put('{id}/editar',                       [CustomerController::class, 'update'])->name('update');
 
-    Route::get('/',         [CustomerController::class, 'index'])->name('customer.home');
-    Route::get('/criar',    [CustomerController::class, 'form'])->name('customer.create');
-    Route::post('/salvar',  [CustomerController::class, 'save'])->name('customer.save');
+    Route::prefix('/{id}')->name('rent.')->controller(RentController::class)->group(function () {
+        Route::get('/',  'index')->name('home');
+    });
 
 });
 
+// Route::prefix('alugar')->name('rent.')->group(function () {
+//     Route::get('/{id}',                            [RentController::class, 'form'])->name('home');
 
-
+// });

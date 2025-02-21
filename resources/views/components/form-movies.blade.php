@@ -1,27 +1,15 @@
-<style>
 
-    .form-group {
-        margin-bottom: 15px;
-    }
-    .form-group-radio {
-        margin-bottom: 15px;
-        display: flex;
-        flex-direction: column;
-    }
 
-    .radio-row{
-        display: flex;
-        flex-direction: row;
-    }
-
-    .form-label {
-        font-weight: 500;
-    }
-    .form-radio{
-        margin: 10px 10px;
-    }
-
-</style>
+@php
+    $categories = [
+        "action" => 'Ação',
+        "adventure" => 'Aventura',
+        "horror" => 'Terror',
+        "romance" => 'Romance',
+        "mistery" => 'Misterio',
+        "comedy" => 'Comedia'
+    ];
+@endphp
 
 <form class="form" action="{{ route('movie.save') }}" method="post">
 
@@ -36,12 +24,9 @@
         <label class="form-label">Categoria</label>
         <select required class="form-control" name="category">
             <option value="">Selecione uma opção</option>
-            <option value="action">Ação</option>
-            <option value="adventure">Aventura</option>
-            <option value="horror">Terror</option>
-            <option value="romance">Romance</option>
-            <option value="mistery">Misterio</option>
-            <option value="comedy">Comedia</option>
+            @foreach ($categories as $key => $category)
+                <option value="{{$key}}" {{ old('category') == $key ? 'selected' : '' }} >{{$category}}</option>
+            @endforeach
         </select>
     </div>
 
@@ -60,24 +45,23 @@
             $dateNow = date('Y-m-d');
         @endphp
         <label class="form-label">Data de Lançamento</label>
-        <input class="form-control" type="date" required max="{{$dateNow}}" name="release_date" value="{{old('release_date')}}">
+        <input class="form-control" type="date"  required max="{{$dateNow}}" name="release_date" value="{{old('release_date')}}">
     </div>
 
     <div class="form-group">
         <label class="form-label">Descrição</label>
-        <textarea class="form-control" type="text" required minlength="100" name="description" value="{{old('description')}}"></textarea>
+        <textarea class="form-control" type="text" required minlength="100" name="description">{{old('description')}}</textarea>
     </div>
 
     <div class="form-group-radio">
         <label class="form-label">Sou Fã?</label>
         <div class="radio-row">
             <label class="form-label">Sim</label>
-            <input class="form-radio" required type="radio" name="is_fan" value="1"/>
+            <input class="form-radio" required type="radio" @checked(old('is_fan') == 1) name="is_fan" value="1"/>
             <label class="form-label">Não</label>
-            <input class="form-radio" required type="radio" name="is_fan" value="0"/>
+            <input class="form-radio" required type="radio" @checked(old('is_fan') == 0) name="is_fan" value="0"/>
         </div>
     </div>
-
 
     <button type="submit" class="btn btn-primary">Salvar</button>
 
