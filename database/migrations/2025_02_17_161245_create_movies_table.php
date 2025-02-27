@@ -19,7 +19,6 @@ return new class extends Migration
             $table->integer('age_indication');
             $table->integer('duration');
             $table->date('release_date');
-            $table->boolean('is_fan');
             $table->timestamps();
         });
     }

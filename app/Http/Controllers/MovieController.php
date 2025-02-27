@@ -20,9 +20,9 @@ class MovieController extends Controller
      */
     public function index(Request $request) {
 
-        $movies = Movie::orderBy('id', 'desc')->paginate($request->pagination ?? 10);
+        $movies = Movie::search($request)->orderBy('id', 'desc')->paginate($request->pagination ?? 10)->withQueryString();
 
-        return view('/movies/index', [
+        return view('movies.index', [
             'movies' => $movies
         ]);
 
@@ -34,7 +34,7 @@ class MovieController extends Controller
      * @return void
      */
     public function form() {
-        return view('/movies/form');
+        return view('movies.form');
     }
 
     /**
@@ -50,7 +50,6 @@ class MovieController extends Controller
             'duration' => 'required',
             'release_date' => 'required',
             'description' => 'required',
-            'is_fan' => 'required'
         ],[
             'required' => 'O Campo :attribute deve ser preenchido!'
         ]);
@@ -68,7 +67,6 @@ class MovieController extends Controller
             $movie->age_indication = $request->age_indication;
             $movie->duration = $request->duration;
             $movie->release_date = $request->release_date;
-            $movie->is_fan = $request->is_fan;
             $movie->save();
 
             return redirect()->route('movie.home')->withSuccess("Filme criado com sucesso!");
@@ -105,7 +103,7 @@ class MovieController extends Controller
      */
     public function formEdit(int $id){
         $movie = Movie::find($id);
-        return view('/movies/update',["movie" => $movie]);
+        return view('movies.update',["movie" => $movie]);
     }
 
     /**

@@ -9,6 +9,7 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
+    public $incrementing = true;
     public function up(): void
     {
         Schema::create('customer_movie', function (Blueprint $table) {

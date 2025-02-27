@@ -53,16 +53,6 @@
         <textarea class="form-control" type="text" required minlength="100" name="description">{{old('description')}}</textarea>
     </div>
 
-    <div class="form-group-radio">
-        <label class="form-label">Sou Fã?</label>
-        <div class="radio-row">
-            <label class="form-label">Sim</label>
-            <input class="form-radio" required type="radio" @checked(old('is_fan') == 1) name="is_fan" value="1"/>
-            <label class="form-label">Não</label>
-            <input class="form-radio" required type="radio" @checked(old('is_fan') == 0) name="is_fan" value="0"/>
-        </div>
-    </div>
-
     <button type="submit" class="btn btn-primary">Salvar</button>
 
 </form>

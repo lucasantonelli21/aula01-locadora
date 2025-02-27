@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
+
+
 class CustomerController extends Controller
 {
 
@@ -16,9 +18,9 @@ class CustomerController extends Controller
      * @return void
      */
     public function index(Request $request) {
-        $customers = Customer::orderBy('id', 'desc')->paginate($request->pagination ?? 10);
+        $customers = Customer::search($request)->orderBy('id', 'desc')->paginate($request->pagination ?? 10)->withQueryString();
 
-        return view('/customers/index',[
+        return view('customers.index',[
             'customers' => $customers
         ]);
 
@@ -47,10 +49,10 @@ class CustomerController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'email' => 'required|unique:customers',
+            'email' => 'required',
             'birth_date' =>'required',
-            'cpf' => 'required|unique:customers',
-            'phone' => 'required|unique:customers',
+            'cpf' => 'required',
+            'phone' => 'required',
             'able' => 'required'
         ],[
             'unique' => 'O Campo :attribute deve ser único!',
@@ -73,8 +75,9 @@ class CustomerController extends Controller
             $customer->save();
 
             return redirect()->route('customer.home')->withSuccess("Cliente criado com sucesso!");
-
         }
+
+
 
     }
 
@@ -110,20 +113,33 @@ class CustomerController extends Controller
      * Atualiza um Customer no DB
      */
 
-    public function update(int $id,Request $request){
-        try {
+    public function update(Request $request,int $id){
+        // try {
             $customer = Customer::find($id);
             if($customer == null){
                 return redirect()->route('customer.home')->withErrors('Não foi encontrado nenhum cliente com este Id!');
             }
 
             $validator = Validator::make($request->all(), [
-                'email' => 'unique:customers',
-                'cpf' => 'unique:customers',
-                'phone' => 'unique:customers',
-            ],[
-                'unique' => 'O Campo :attribute deve ser único!'
+                'email' => 'nullable',
+                'cpf' => 'nullable',
+                'phone' => 'nullable',
             ]);
+
+            $validator->after(function ($validator) use($request,$customer) {
+                $fields = [
+                    'email' => $request->email,
+                    'cpf' => $request->cpf,
+                    'phone' => $request->phone,
+                ];
+
+                foreach($fields as $field => $value){
+                    $customerToUpdate = Customer::where($field,'ilike',$value)->first();
+                    if($customerToUpdate->id != $customer->id){
+                        $validator->erros()->add($field,$field.' Deve ser Único por cliente');
+                    }
+                }
+            });
 
             if($validator->fails()){
                 return back()->withErrors($validator->errors())->withInput();
@@ -139,12 +155,12 @@ class CustomerController extends Controller
 
             return redirect()->route('customer.home')->withSuccess('Cliente editado com sucesso!');
 
-        } catch (\Throwable $th) {
+        // // } catch (\Throwable $th) {
 
-            Log::inf('Updating movie [CUSTOMERCONTROLLER][UPDATE]',$th->error_log);
-            return redirect()->route('customer.home')->withErrors('Sistema indisponível, tente mais tarde!');
+        //     Log::inf('Updating movie [CUSTOMERCONTROLLER][UPDATE]',$th->error_log);
+        //     return redirect()->route('customer.home')->withErrors('Sistema indisponível, tente mais tarde!');
 
-        }
+        // // }
     }
 
 }
