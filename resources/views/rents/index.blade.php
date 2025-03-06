@@ -1,10 +1,20 @@
+@php
+    $categories = [
+        'action' => 'Ação',
+        'adventure' => 'Aventura',
+        'horror' => 'Terror',
+        'romance' => 'Romance',
+        'mistery' => 'Misterio',
+        'comedy' => 'Comedia',
+    ];
+@endphp
+
+
 <x-blank>
     <div class="card">
 
         <div class="card-header">
-
             <h2 class="title text-center">Alugueis de {{ $customer->name }}</h2>
-
         </div>
 
         <div class="card-body">
@@ -19,26 +29,32 @@
                         <th>Preço do Aluguel</th>
                         <th class="text-center">Ações</th>
                     </tr>
-                    @foreach ($customer->movies as $movie )
+                    @foreach ($customer->movies as $movie)
                         <tr>
-                            <td>{{$movie->id}}</td>
-                            <td>{{$movie->name}}</td>
-                            <td>{{date('d-m-Y', strtotime($movie->pivot->pickup_date))}}</td>
-                            <td>{{date('d-m-Y', strtotime($movie->pivot->return_date))}}</td>
-                            <td>{{$movie->pivot->price}}</td>
+                            <td>{{ $movie->id }}</td>
+                            <td>{{ $movie->name }}</td>
+                            <td>{{ date('d-m-Y', strtotime($movie->pivot->pickup_date)) }}</td>
+                            <td>{{ date('d-m-Y', strtotime($movie->pivot->return_date)) }}</td>
+                            <td>{{ $movie->pivot->price }}</td>
                             <td>
                                 <div class="table-buttons">
 
-                                    <form action="{{route('customer.rent.formEdit', [$customer->id, $movie->pivot->id])}}">
+                                    <form
+                                        action="{{ route('customer.rent.formEdit', [$customer->id, $movie->pivot->id]) }}">
                                         <button type="submit" class="btn btn-success">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
-                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
-                                              </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                                <path
+                                                    d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                                            </svg>
                                         </button>
                                     </form>
                                     @if (Auth::user()->is_admin)
-                                        <form action="{{ route('customer.rent.delete', [$customer->id, $movie->pivot->id]) }}" method="POST">
+                                        <form
+                                            action="{{ route('customer.rent.delete', [$customer->id, $movie->pivot->id]) }}"
+                                            method="POST">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger">
@@ -55,8 +71,6 @@
                                 </div>
                             </td>
                         </tr>
-
-
                     @endforeach
                 </table>
             </div>

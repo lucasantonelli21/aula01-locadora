@@ -1,4 +1,3 @@
-
 <x-blank>
 
     <div class="container">

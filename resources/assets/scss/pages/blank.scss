@@ -1,0 +1,41 @@
+.table-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.card-header {
+    .card-row {
+        display: flex;
+        justify-content: space-between;
+    }
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group-radio {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.radio-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.form-label {
+    font-weight: 500;
+}
+.form-radio {
+    margin: 10px 10px;
+}
+
+.form-group-filter {
+    display: flex;
+    flex-direction: row;
+}
+
+

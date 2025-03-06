@@ -81,7 +81,8 @@ class RentController extends Controller
             return back()->withErrors($validator->errors())->withInput();
         } else {
 
-            $customer = Customer::where('email', 'ilike',  Auth::user()->is_admin ? $request->customer_email : Auth::user()->email)->first();
+
+            $customer = Customer::where( Auth::user()->is_admin ? 'id' : 'email', 'ilike',  Auth::user()->is_admin ? $request->customer_email : Auth::user()->email)->first();
 
             if (!$customer) {
                 return back()->withErrors('Não foi encontrado nenhum usuário com esse e-mail!');

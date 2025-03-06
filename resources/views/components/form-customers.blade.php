@@ -1,5 +1,3 @@
-
-
 <form class="form" action="{{route('customer.save')}}" method="post">
 
     @csrf

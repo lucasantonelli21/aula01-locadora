@@ -26,6 +26,9 @@ class LoginController extends Controller
         if (Auth::attempt($credentials, false)) {
             $request->session()->regenerate();
 
+            if(Auth::user()->is_admin){
+                return redirect()->route('dashboard.home')->withSuccess('Login realizado com sucesso! Bem-Vindo Admin');
+            }
             return redirect()->route('loggedin')->withSuccess('Login realizado com sucesso!');
         }
 

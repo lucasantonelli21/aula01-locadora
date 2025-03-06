@@ -17,14 +17,7 @@
                 @if (Auth::user()->is_admin)
                     <div class="form-group">
                         <label class="form-label">Insira seu email</label>
-                        <select required class="form-control select2" name="customer_email">
-                            @foreach ($customers as $customer)
-                                <option value=""></option>
-                                <option {{ old('customer_email') == $customer->email ? 'selected' : '' }}
-                                    value="{{ $customer->email }}">{{ $customer->email }}</option>
-                            @endforeach
-
-                        </select>
+                        <select required class="form-control select2" id="select2" name="customer_email"></select>
                     </div>
                 @endif
 
@@ -34,13 +27,14 @@
                         $dateTomorrow = now()->addDays(1)->format('Y-m-d');
                     @endphp
                     <label class="form-label">Data para Retirada do Filme</label>
-                    <input class="form-control" type="date" required name="pickup_date" value="{{ $dateNow }}"/>
+                    <input class="form-control" type="date" required name="pickup_date"
+                        value="{{ $dateNow }}" />
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Data para Devolução do Filme</label>
                     <input class="form-control" type="date" min="{{ $dateTomorrow }}" required name="return_date"
-                        value="{{ $dateTomorrow }}"/>
+                        value="{{ $dateTomorrow }}" />
                 </div>
 
             </div>

@@ -1,28 +1,4 @@
-<style>
-    .password-box .form-control {
-        margin-right: 5px;
-    }
-
-    .img-check {
-        visibility: hidden;
-        width: 40px;
-        height:40px;
-    }
-
-    .flex-column {
-        margin-right: 20px;
-    }
-
-    .flex-row {
-        margin-bottom: 20px;
-    }
-</style>
-
-
-
-
 <x-blank>
-
     <div class="page-profile-edit card">
         <div class="card-header">
             <h2 class="text-center">Perfil de {{ Auth::user()->name }}</h2>

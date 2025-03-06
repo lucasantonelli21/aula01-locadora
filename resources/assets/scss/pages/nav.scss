@@ -1,0 +1,13 @@
+.login-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    .login-title {
+        text-decoration: none;
+        font-weight: 600;
+        margin-right: 10px;
+        margin-top: 5px;
+        color: blue;
+    }
+}

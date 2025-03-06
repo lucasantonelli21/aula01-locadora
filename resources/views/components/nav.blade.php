@@ -1,23 +1,21 @@
-<style>
-    .login-row {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
+@php
+    $route = 'customer.home';
+    $needParameter = false;
+    $homeRoute = '/dashboard';
+    if (Auth::user()) {
+        if (!Auth::user()->is_admin) {
+            $route = 'customer.rent.home';
+            $homeRoute = '/home';
+            $needParameter = true;
+            $customerId = Auth::user()->customer_id;
+        }
     }
-
-    .login-row .login-title {
-        text-decoration: none;
-        font-weight: 600;
-        margin-right: 10px;
-        margin-top: 5px;
-        color: blue;
-    }
-</style>
+@endphp
 
 <div>
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{{ Auth::check() ? '/home' : '/' }}">Locadora da Sysout</a>
+            <a class="navbar-brand" href="{{ Auth::check() ? $homeRoute : '/' }}">Locadora da Sysout</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -27,17 +25,6 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="{{ route('movie.home') }}">Filmes</a>
                     </li>
-                    @php
-                        $route = 'customer.home';
-                        $needParameter = false;
-                        if (Auth::user()) {
-                            if (!Auth::user()->is_admin) {
-                                $route = 'customer.rent.home';
-                                $needParameter = true;
-                                $customerId = Auth::user()->customer_id;
-                            }
-                        }
-                    @endphp
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page"
                             href="{{ $needParameter ? route($route, [$customerId]) : route($route) }}">{{ $needParameter ? 'Meus Alugueis' : 'Clientes' }}</a>

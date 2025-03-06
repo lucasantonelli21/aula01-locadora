@@ -163,4 +163,9 @@ class CustomerController extends Controller
         // // }
     }
 
+
+    public function getEmails(Request $request){
+        return Customer::select('id','email as text')->where('email', 'ilike', '%'.$request->search.'%')->limit(3)->get();
+    }
+
 }

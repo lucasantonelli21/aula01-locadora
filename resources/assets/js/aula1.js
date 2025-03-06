@@ -44,14 +44,35 @@ $(".page-form-rent", function(){
     var $emailSelect2 =  $('.select2').select2({
         width: "100%",
         placeholder : "Insira o e-mail do cliente",
-        theme: "classic",
+        // dropdownCssClass: "drop-down-select",
+        // selectionCssClass: ":all:",
+        // theme: "classic",
         language: {
             "noResults": function(){
                 return "Não foi encontrado nenhum e-mail com esses caracteres ! ";
             }
+        },
+        ajax: {
+            url: "http://127.0.0.1:8000/clientes/email",
+            delay: 200,
+            data: function(params){
+                var query = {
+                    search: params.term,
+                    type: 'public'
+                  }
+                return query;
+            },
+            processResults: function(data){
+                return {results: data};
+            }
         }
+
+
       });
 
 });
+
+
+
 
 

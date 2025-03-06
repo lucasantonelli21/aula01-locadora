@@ -53,7 +53,7 @@ class UserController extends Controller
 
     public function getFormEdit(){
         $customer = Customer::find(Auth::user()->customer_id);
-        return view('user.formEdit',[
+        return view('user.form-edit',[
             'customer' => $customer
         ]);
     }

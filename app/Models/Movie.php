@@ -56,4 +56,11 @@ class Movie extends Model
 
     }
 
+    public function scopeRenteds($query){
+        return $query->join('customer_movie', 'customer_movie.movie_id', 'movies.id')
+        ->selectRaw('movies.name, count(customer_movie.id) as rented')
+        ->groupByRaw('movies.id, movies.name')->orderBy('rented','DESC')
+        ->get();
+    }
+
 }

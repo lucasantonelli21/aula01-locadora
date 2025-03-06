@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DashBoardController;
 use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 
@@ -11,6 +12,7 @@ use App\Http\Middleware\VerifyLogin;
 use App\Http\Middleware\VerifyRole;
 use App\Models\Customer;
 use Illuminate\Foundation\Configuration\Middleware;
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,9 +38,17 @@ Route::prefix('usuarios')->name('user.')->group(function (){
     Route::put('/perfil/editar',                     [UserController::class, 'update'])->middleware(VerifyLogin::class)->name('update');
 });
 
-Route::get('/', function () {
+
+Route::prefix('dashboard')->middleware(VerifyLogin::class)->name('dashboard.')->group(function (){
+
+    Route::middleware(VerifyRole::class)->get('/',                                 [DashBoardController::class, 'index'])->name('home');
+
+});
+
+Route::get('', function () {
     return view('home');
 })->name('home');
+
 
 Route::middleware(VerifyLogin::class)->get('/home', function () {
     return view('index');
@@ -66,6 +76,7 @@ Route::prefix('filmes')->middleware(VerifyLogin::class)->name('movie.')->group(f
 Route::prefix('clientes')->middleware(VerifyLogin::class)->name('customer.')->group(function () {
 
     Route::get('/',                                 [CustomerController::class, 'index'])->middleware(VerifyRole::class)->name('home');
+    Route::get('/email',                            [CustomerController::class, 'getEmails'])->middleware(VerifyRole::class)->name('emails');
     Route::get('/criar',                            [CustomerController::class, 'form'])->middleware(VerifyRole::class)->name('create');
     Route::get('{id}/editar',                       [CustomerController::class, 'formEdit'])->middleware(VerifyRole::class)->name('formEdit');
     Route::post('/salvar',                          [CustomerController::class, 'save'])->middleware(VerifyRole::class)->name('save');
